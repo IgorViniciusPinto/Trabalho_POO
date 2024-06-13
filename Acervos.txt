@@ -1,0 +1,5 @@
+0,franz kafka,metamorfose,1915,novela
+1,toshikazu kawaguchi,antes que o cafe esfrie,2022,romance
+2,john edward williams,stoner,1965,romance
+3,johann wolfgang von goethe,os sofrimentos do jovem werther,1774,romance
+4,walter isaacson,einstein his life and universe,2007,biografia

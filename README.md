@@ -10,6 +10,8 @@ Os administradores do sistema têm a capacidade de gerenciar contas de usuários
 
 Essas funcionalidades proporcionam uma gestão eficiente e organizada da biblioteca, melhorando a experiência dos usuários e a administração do acervo.
 
+# User stories:
+
 # Integrante:
 . Igor Vinicius Batista Ferraz Pinto
 

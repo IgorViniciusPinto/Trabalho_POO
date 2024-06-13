@@ -35,14 +35,16 @@ class Admin(PerfilUsuario):
         print(f"Exemplar '{exemplar.get_titulo()}' removido do acervo com sucesso.")
         return True
 
-    def listar_acervo(self, acervo: Dict[int, Acervo]) -> None:
+    def listar_acervo(self, acervo: Dict[int, Acervo]) -> List[str]:
         # Lista todos os exemplares no acervo.
+        resultados = []
         if not acervo:
-            print("O acervo está vazio.")
+            resultados.append("O acervo está vazio.")
         else:
             for exemplar in acervo.values():
-                status: str = "Emprestado" if exemplar.is_emprestado() else "Disponível"
-                print(f"Código: {exemplar.get_codigo()}, Título: {exemplar.get_titulo()}, Autor: {exemplar.get_autor()}, Ano: {exemplar.get_ano_publicacao()}, Gênero: {exemplar.get_genero()}, Status: {status}")
+                status = "Emprestado" if exemplar.is_emprestado() else "Disponível"
+                resultados.append(f"Código: {exemplar.get_codigo()}, Título: {exemplar.get_titulo()}, Autor: {exemplar.get_autor()}, Ano: {exemplar.get_ano_publicacao()}, Gênero: {exemplar.get_genero()}, Status: {status}")
+        return resultados
 
     def consultar_acervo(self, exemplares: List[Acervo]) -> None:
         # Verifica se exemplares é uma lista
@@ -85,13 +87,15 @@ class Admin(PerfilUsuario):
         print(f"Usuário '{email}' removido com sucesso.")
         return True
 
-    def listar_usuarios(self, usuarios: Dict[str, PerfilUsuario]) -> None:
+    def listar_usuarios(self, usuarios: Dict[str, PerfilUsuario]) -> List[str]:
         # Lista todos os usuários.
+        resultados = []
         if not usuarios:
-            print("Não há usuários cadastrados.")
+            resultados.append("Não há usuários cadastrados.")
         else:
             for email, perfil in usuarios.items():
-                print(f"ID: {perfil.get_ID_perfil_usuario()}, Email: {email}, Cargo: {perfil.get_cargo_usuario()}")
+                resultados.append(f"ID: {perfil.get_ID_perfil_usuario()}, Email: {email}, Cargo: {perfil.get_cargo_usuario()}")
+        return resultados
 
     def consultar_usuario(self, usuarios: Dict[str, PerfilUsuario], email: str) -> None:
         # Consulta um usuário pelo email.
@@ -110,17 +114,17 @@ class Admin(PerfilUsuario):
             print(f"Acervo salvo com sucesso em '{filename}'.")
         except Exception as e:
             print(f"Erro ao salvar o acervo: {e}")
-
+            
     # Método para carregar o acervo
     def carregar_acervo(self, filename: str = 'acervo.txt') -> Dict[int, Acervo]:
-        # Returns: Dict[int, Acervo]: Dicionário representando o acervo carregado.
-        acervo = {}
+        acervo: Dict[int, Acervo] = {}
         try:
             if os.path.exists(filename):
                 with open(filename, 'r') as file:
                     for linha in file:
-                        exemplar = Acervo.from_string(linha.strip())
-                        acervo[exemplar.get_codigo()] = exemplar
+                        exemplar = Acervo.from_string(linha.strip())  # Assume que from_string é um método estático de Acervo
+                        if exemplar:
+                            acervo[exemplar.get_codigo()] = exemplar
                 print(f"Acervo carregado com sucesso de '{filename}'.")
             else:
                 print(f"O arquivo '{filename}' não existe.")
@@ -129,13 +133,14 @@ class Admin(PerfilUsuario):
         return acervo
 
     # Método para salvar usuários no arquivo
-    def salvar_usuario(self, filename: str = 'usuarios.txt') -> None:
+    def salvar_usuario(self, filename:str='usuarios.txt') -> None:
         try:
-            with open(filename, 'a') as file:
-                file.write(f'{self.get_ID_perfil_usuario()}, {self.get_cargo_usuario()}, {self.get_email_perfil_usuario()}, {self.get_senha_perfil_usuario()}\n')
-            print(f"Usuário salvo com sucesso em '{filename}'.")
+            with open(filename, 'w') as file:
+                for perfil in self.usuarios.values():
+                    file.write(f'{perfil.get_ID_perfil_usuario()}, {perfil.get_cargo_usuario()}, {perfil.get_email_perfil_usuario()}, {perfil.get_senha_perfil_usuario()}\n')
+            print(f"Usuários salvos com sucesso em '{filename}'.")
         except Exception as e:
-            print(f"Erro ao salvar o usuário: {e}")
+            print(f"Erro ao salvar os usuários: {e}")
 
     # Método para carregar usuários de um arquivo
     # Returns: Dict[str, PerfilUsuario]: Dicionário representando os usuários carregados.

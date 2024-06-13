@@ -1,0 +1,4 @@
+Aluno,er@example.com,123456
+Aluno,john@example.com,password
+Bibliotecario,biblio@example.com,securepass
+Admin,admin@example.com,adminpass

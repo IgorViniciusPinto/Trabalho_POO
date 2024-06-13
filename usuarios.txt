@@ -1,4 +1,4 @@
-Aluno,er@example.com,123456
-Aluno,john@example.com,password
-Bibliotecario,biblio@example.com,securepass
-Admin,admin@example.com,adminpass
+1,aluno,er@example.com,123456
+2,aluno,john@example.com,senha123
+3,bibliotecario,biblio@example.com,securepass
+4,admin,admin@example.com,adminpass

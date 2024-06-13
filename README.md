@@ -9,3 +9,7 @@ Para os usuários, o sistema oferece a possibilidade de verificar multas por atr
 Os administradores do sistema têm a capacidade de gerenciar contas de usuários e bibliotecários, podendo apagá-las e adicioná-las conforme necessário. No entanto, a criação de contas de administradores atualmente requer inserção manual no arquivo usuarios.csv.
 
 Essas funcionalidades proporcionam uma gestão eficiente e organizada da biblioteca, melhorando a experiência dos usuários e a administração do acervo.
+
+# Integrante:
+# Igor Vinicius Batista Ferraz Pinto
+

@@ -1,3 +1,4 @@
+from typing import List, Dict, Optional
 import csv
 
 class Acervo:
@@ -8,8 +9,9 @@ class Acervo:
         self._titulo:str = titulo
         self._ano_publicacao:int = ano_publicacao
         self._genero:str = genero
+        self._emprestado:bool = False
 
-    def get_codigo(self) -> None:
+    def get_codigo(self) -> int:
         """Retorna o código do exemplar."""
         return self._codigo
 
@@ -29,24 +31,58 @@ class Acervo:
         """Retorna o gênero do exemplar."""
         return self._genero
 
+    def is_emprestado(self) -> bool:
+        """Retorna True se o exemplar está emprestado, False caso contrário."""
+        return self._emprestado
+
+    def set_emprestado(self, emprestado:bool) -> None:
+        """Define o status de empréstimo do exemplar."""
+        self._emprestado = emprestado
+        
+    def to_string(self) -> str:
+        """Retorna uma string representando o exemplar para salvar em um arquivo."""
+        return f'{self._codigo}, {self._autor}, {self._titulo}, {self._ano_publicacao}, {self._genero}, {"Emprestado" if self._emprestado else "Disponível"}'
+
+    @classmethod
+    def from_string(cls, exemplar_str: str) -> "Acervo":
+        """Cria um exemplar a partir de uma string."""
+        codigo, autor, titulo, ano_publicacao, genero, status = exemplar_str.strip().split(',')
+        exemplar = cls(int(codigo), autor.strip(), titulo.strip(), int(ano_publicacao), genero.strip())
+        exemplar.set_emprestado(status.strip() == "Emprestado")
+        return exemplar
+
 class GestorAcervo:
     def __init__(self) -> None:
         """Inicializa o gestor de acervo com um dicionário vazio para armazenar os exemplares."""
-        self.acervo = {}
+        self.acervo: Dict[int, List[Acervo]] = {}
 
-    def carregar_acervos(self, arquivo:str ="acervos.txt") -> None:
+    def adicionar_exemplar(self, exemplar: Acervo) -> None:
+        """Adiciona um exemplar ao acervo."""
+        if exemplar.get_codigo() not in self.acervo:
+            self.acervo[exemplar.get_codigo()] = []
+        self.acervo[exemplar.get_codigo()].append(exemplar)
+
+    def consultar_exemplar_por_codigo(self, codigo: int) -> Optional[Acervo]:
+        """Consulta um exemplar no acervo pelo código."""
+        if codigo in self.acervo and self.acervo[codigo]:
+            return self.acervo[codigo][0]  # Retorna o primeiro exemplar encontrado com o código
+        else:
+            return None
+
+    #def carregar_acervos(self, arquivo:str ="acervos.txt") -> None:
+        """Carrega os exemplares do acervo a partir do arquivo acervos.txt."""
+    def carregar_acervos(self, arquivo: str = "acervos.txt") -> None:
         """Carrega os exemplares do acervo a partir do arquivo acervos.txt."""
         try:
-            with open(arquivo, "r") as arquivo_acervos:
+            with open(arquivo, "r", newline='', encoding='utf-8') as arquivo_acervos:
                 acervos_reader = csv.reader(arquivo_acervos)
                 next(acervos_reader)  # Pular o cabeçalho
                 for linha in acervos_reader:
-                    if len(linha) != 5:
-                        print("Erro: Linha incompleta no arquivo. Ignorando.")
+                    if len(linha) != 6:  # Verifique se há 6 campos na linha
+                        print(f"Erro: Formato inválido de linha no arquivo. Linha: {linha}")
                         continue
 
-                    codigo, autor, titulo, ano_publicacao, genero = linha
-
+                    codigo, autor, titulo, ano_publicacao, genero, status = linha
                     try:
                         codigo = int(codigo)
                         ano_publicacao = int(ano_publicacao)
@@ -54,14 +90,30 @@ class GestorAcervo:
                         print(f"Erro ao converter valores para inteiros: {e}. Linha: {linha}")
                         continue
 
-                    exemplar = Acervo(codigo, autor, titulo, ano_publicacao, genero)
-
-                    if codigo not in self.acervo:
-                        self.acervo[codigo] = []
-
-                    self.acervo[codigo].append(exemplar)
+                    exemplar = Acervo(codigo, autor.strip(), titulo.strip(), ano_publicacao, genero.strip())
+                    exemplar.set_emprestado(status.strip() == "Emprestado")
+                    self.adicionar_exemplar(exemplar)
 
         except FileNotFoundError:
             print("Erro: Arquivo de acervos não encontrado.")
         except Exception as e:
             print(f"Erro ao carregar acervos: {e}")
+
+    def salvar_acervos(self, arquivo: str = "acervos.txt") -> None:
+        """Salva os exemplares do acervo no arquivo acervos.txt."""
+        try:
+            with open(arquivo, "w", newline='', encoding='utf-8') as arquivo_acervos:
+                writer = csv.writer(arquivo_acervos)
+                writer.writerow(["codigo", "autor", "titulo", "ano_publicacao", "genero"])
+                for lista_exemplares in self.acervo.values():
+                    for exemplar in lista_exemplares:
+                        writer.writerow([
+                            exemplar.get_codigo(),
+                            exemplar.get_autor(),
+                            exemplar.get_titulo(),
+                            exemplar.get_ano_publicacao(),
+                            exemplar.get_genero(),
+                            "Emprestado" if exemplar.is_emprestado() else "Disponível"
+                        ])
+        except Exception as e:
+            print(f"Erro ao salvar acervos: {e}")

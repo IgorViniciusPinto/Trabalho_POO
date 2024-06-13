@@ -1,18 +1,14 @@
-import csv
 from bibliotecario import Bibliotecario
-from typing import Dict, List, Union, Optional
-from exemplar import Exemplar
+from typing import Dict, List, Union
+from exemplar import Exemplar, ExemplarConcreto
 from admin import Admin
 from aluno import Aluno
-
-class EmailJaCadastradoError(Exception):
-# Exceção personalizada para indicar que um email já foi cadastrado.
-    pass
+import csv
 
 class Sistema:
     # Classe responsável por gerenciar o sistema de biblioteca, incluindo acervos e usuários.
     def __init__(self) -> None:
-    # Inicializa o sistema com dicionários vazios para acervo e usuários.
+        # Inicializa o sistema com dicionários vazios para acervo e usuários.
         self.biblioteca: Dict[int, List[Exemplar]] = {}  # Mapeia o código de acervo para uma lista de exemplares
         self.usuarios: Dict[str, Union[Aluno, Bibliotecario, Admin]] = {}  # Mapeia o email do usuário para uma instância de PerfilUsuario
 
@@ -31,29 +27,24 @@ class Sistema:
         except ValueError:
             print("Entrada inválida. Encerrando o sistema.")
             return
-        
+
         cadastro = self.tela_cadastro(cargo)
         if cadastro:
             self.tela_login()
 
-    def carregar_acervos(self, arquivo:str) -> None:
-        # Carrega os acervos a partir de um arquivo CSV.
+    def carregar_acervos(self, arquivo: str) -> None:
         try:
             with open(arquivo, "r") as arquivo_acervos:
                 acervos_reader = csv.reader(arquivo_acervos)
-                next(acervos_reader)  # Pular o cabeçalho
+                next(acervos_reader)  # Pular o cabeçalho, se houver
                 for linha in acervos_reader:
                     codigo_acervo, autor, titulo, ano_publicacao, genero = linha
                     codigo_acervo = int(codigo_acervo)
                     ano_publicacao = int(ano_publicacao)
-                    
-                    exemplar = Exemplar(codigo_acervo, codigo_acervo, autor, titulo, ano_publicacao, genero)
-
+                    exemplar = ExemplarConcreto(codigo_acervo, autor, titulo, ano_publicacao, genero)
                     if codigo_acervo not in self.biblioteca:
                         self.biblioteca[codigo_acervo] = []
-
                     self.biblioteca[codigo_acervo].append(exemplar)
-
         except FileNotFoundError:
             print("Falha ao abrir o arquivo de acervos.")
         except Exception as e:
@@ -83,15 +74,14 @@ class Sistema:
             print("Falha ao abrir o arquivo com os usuários.")
         except Exception as e:
             print(f"Erro ao carregar usuários: {e}")
-
-    def tela_cadastro(self, cargo:int) -> bool:
-    # Tela de cadastro para novos usuários.
-    # Returns: bool: True se o cadastro foi bem-sucedido ou se o usuário já tem cadastro, False caso contrário.
-    
+            
+    def tela_cadastro(self, cargo: int) -> bool:
+        # Tela de cadastro para novos usuários.
+        # Returns: bool: True se o cadastro foi bem-sucedido ou se o usuário já tem cadastro, False caso contrário.
         entrada = input("Possui cadastro? Digite 0 para não e 1 para sim:\n")
         if entrada == "0":
             email = input("Cadastre seu email:\n")
-            senha = int(input("Cadastre sua senha (somente números):\n"))
+            senha = input("Cadastre sua senha (pode incluir números e letras):\n")
         
             if email in self.usuarios:
                 print("Email já cadastrado.")
@@ -109,48 +99,33 @@ class Sistema:
 
             self.usuarios[email] = novo_usuario
             print(f"Usuário {email} cadastrado com sucesso.")
-
             return True
 
         elif entrada == "1":
             return True
-
         return False
+    
+    def criar_exemplar(self, codigo_acervo, autor, titulo, ano_publicacao, genero):
+        exemplar = ExemplarConcreto(codigo_acervo, autor, titulo, ano_publicacao, genero)
+        if codigo_acervo not in self.biblioteca:
+            self.biblioteca[codigo_acervo] = []
+        self.biblioteca[codigo_acervo].append(exemplar)
+        return exemplar
 
-    def tela_login(self) -> None:
-    # Tela de login para usuários existentes.
-        email = input("Digite seu email:\n")
-        tentativas = 0
+    def tela_login(self):
+        email = input("Digite seu email: ")
 
-        while tentativas < 3:
-            senha = input("Digite sua senha:\n")
-
-            if email in self.usuarios:
-                perfil = self.usuarios[email]
-                if perfil.get_senha_perfil_usuario() == senha:
-                    if isinstance(perfil, Aluno):
-                        self.tela_aluno(perfil)
-                    elif isinstance(perfil, Bibliotecario):
-                        self.tela_bibliotecario(perfil)
-                    elif isinstance(perfil, Admin):
-                        self.tela_admin(perfil)
-                    return
-                else:
-                    print("Senha incorreta. Tente novamente.")
-                    tentativas += 1
+        if email in self.usuarios:
+            usuario = self.usuarios[email]
+            senha = input("Digite sua senha: ")
+            if isinstance(usuario, Admin) or isinstance(usuario, Aluno) or isinstance(usuario, Bibliotecario):
+                return usuario, senha
             else:
-                resposta = input("Email não encontrado.\nDeseja fazer cadastro? Digite 0 para não e 1 para sim:\n")
-                if resposta == "1":
-                    if self.tela_cadastro():
-                        self.tela_login()
-                else:
-                    print("Até mais!!")
-                return  
-
-        print("Você excedeu o número máximo de tentativas. O programa será encerrado.")
+                print("Usuário não reconhecido.")
+        else:
+            print("Email não encontrado.")
 
     def tela_aluno(self, aluno:Aluno) -> None:
-    # Tela para alunos consultarem seus livros ou o acervo.
         while True:
             entrada_aluno = input("Olá aluno!\nDigite 1 para consultar seus livros:\nDigite 2 para consultar um livro específico:\nDigite 3 para sair:\n")
 
@@ -162,10 +137,10 @@ class Sistema:
                 aluno.consultar_acervo(self.biblioteca, titulo_pesquisa)
             elif entrada_aluno == "3":
                 print("Até logo!!")
-                break
+                break  # Sair do loop ao digitar '3'
 
-    def tela_bibliotecario(self, bibl:Bibliotecario) -> None:
-    # Tela para bibliotecários consultarem o acervo.
+    def tela_bibliotecario(self, bibl: Bibliotecario) -> None:
+        # Tela para bibliotecários consultarem o acervo.
         while True:
             print("Olá", bibl.get_email_perfil_usuario())
             print("Digite 1 para consultar todos os livros")
@@ -173,16 +148,20 @@ class Sistema:
             print("Digite 0 para sair")
             op = input("> ")
 
-            if op == "0":
-                break
-            elif op == "1":
+            if op == '1':
+                bibl = Bibliotecario(bibl.get_email_perfil_usuario(), bibl.get_senha_perfil_usuario())
                 bibl.consultar_acervo(self.biblioteca)
-            elif op == "2":
-                titulo = input("Digite o título do livro que deseja consultar:\n")
+            elif op == '2':
+                titulo = input("Digite o título do livro: ")
+                bibl = Bibliotecario(bibl.get_email_perfil_usuario(), bibl.get_senha_perfil_usuario())
                 bibl.consultar_acervo(self.biblioteca, titulo)
+            elif op == '0':
+                raise SystemExit
+            else:
+                print("Opção inválida, digite '0','1' ou '2'.")
 
-    def tela_admin(self, admin:Admin) -> None:
-    # Tela para administradores consultarem livros e gerenciar usuários.
+    def tela_admin(self, admin: Admin) -> None:
+        # Tela para administradores consultarem livros e gerenciar usuários.
         while True:
             print("Olá", admin.get_email_perfil_usuario())
             print("Digite 1 para consultar todos os livros")

@@ -6,10 +6,10 @@ import datetime
 class Aluno(PerfilUsuario):
     MAX_LIVROS:int = 5  # Limite máximo de livros que um aluno pode emprestar
 
-    def __init__(self, email:str, senha:int) -> None:
-        # Inicializa um objeto Aluno com email e senha.
+    def __init__(self, email:str, senha:str) -> None:
+        # Inicializa um objeto Aluno com ID, email e senha.
         super().__init__(email, senha)
-        self._papel:str = "Aluno"
+        self._cargo:str = "Aluno"
         self._livros_com_aluno: List[Dict[str, str]] = [] # Lista de dicionários que armazenam detalhes dos livros emprestados
 
     def consultar_acervo(self, acervo:Dict[int, List[Exemplar]], titulo: Optional[str]=None) -> None:
@@ -38,7 +38,7 @@ class Aluno(PerfilUsuario):
 
     def adicionar_livro(self, livro:Dict[str, str]) -> bool:
         # Adiciona um livro à lista de livros emprestados pelo aluno.
-        #Returns: bool: True se o livro foi adicionado com sucesso, False se o limite de livros foi atingido.
+        # Returns: bool: True se o livro foi adicionado com sucesso, False se o limite de livros foi atingido.
         if len(self._livros_com_aluno) >= Aluno.MAX_LIVROS:
             print("Você atingiu o limite máximo de livros emprestados.")
             return False
@@ -49,19 +49,15 @@ class Aluno(PerfilUsuario):
 
     def remover_livro(self, codigo_livro:int) -> bool:
         # Remove um livro da lista de livros emprestados pelo aluno.
-        # Returns: bool: True se o livro foi removido com sucesso, False se o livro não foi encontrado.
+        # Returns: bool: True se o livro foi removido com sucesso, False se o livro não foi encontrado ou não está emprestado.
         for livro in self._livros_com_aluno:
             if livro['codigo'] == codigo_livro:
-                exemplar = Exemplar.from_string(livro['dados_exemplar'])
-                if exemplar.is_emprestado():
-                    data_devolucao = exemplar.get_data_emprestimo() + datetime.timedelta(days=7)
-                    self.calcular_multa(data_devolucao)
                 self._livros_com_aluno.remove(livro)
                 print("Livro devolvido com sucesso.")
                 return True
         print("Livro não encontrado na lista de livros emprestados.")
         return False
-
+    
     def calcular_multa(self, data_devolucao:datetime.date) -> None:
         # Calcula a multa por atraso na devolução de um livro.
         data_atual = datetime.date.today()
@@ -71,8 +67,12 @@ class Aluno(PerfilUsuario):
             print(f"Você está devolvendo o livro com {dias_atraso} dia(s) de atraso. Sua multa é de R${multa:.2f}.")
         else:
             print("Livro devolvido dentro do prazo. Sem multa.")
-
-    def salvar_usuario(self) -> None:
-        # Salva os dados do usuário em um arquivo.
-        with open('usuarios.txt', 'a') as file:
-            file.write(f'{self.get_ID_perfil_usuario()}, {self.get_email_perfil_usuario()}, {self.get_senha_perfil_usuario()}, {self.get_papel_usuario()}\n')
+            
+    # Salva os dados do usuário em um arquivo.
+    def salvar_usuario(self, filename:str='usuarios.txt') -> None:
+        try:
+            with open(filename, 'a') as file:
+                file.write(f'{self.get_ID_perfil_usuario()}, {self.get_cargo_usuario()}, {self.get_email_perfil_usuario()}, {self.get_senha_perfil_usuario()}\n')
+            print(f"Usuário salvo com sucesso em '{filename}'.")
+        except Exception as e:
+            print(f"Erro ao salvar o usuário: {e}")

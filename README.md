@@ -21,6 +21,6 @@ Como administrador do sistema, eu desejo administrar as contas de usuários e bi
 
 Como administrador do sistema, eu quero consultar um usuário por vez.
 
-# Integrante:
+# Desenvolvedor:
 . Igor Vinicius Batista Ferraz Pinto
 

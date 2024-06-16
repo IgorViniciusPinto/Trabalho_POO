@@ -11,6 +11,15 @@ Os administradores do sistema têm a capacidade de gerenciar contas de usuários
 Essas funcionalidades proporcionam uma gestão eficiente e organizada da biblioteca, melhorando a experiência dos usuários e a administração do acervo.
 
 # User stories:
+Como bibliotecário, eu quero poder consultar o acervo de livros, podendo adicionar ou remover exemplares.
+
+Como aluno, eu quero poder consultar se um livro tem exemplares disponíveis para não perder tempo me deslocando até a biblioteca se não houver nenhum.
+
+Como aluno, eu quero poder pegar um livro emprestado e então devolvê-lo.
+
+Como administrador do sistema, eu desejo administrar as contas de usuários e bibliotecários para poder apagá-las e adicioná-las quando for necessário.
+
+Como administrador do sistema, eu quero consultar um usuário por vez.
 
 # Integrante:
 . Igor Vinicius Batista Ferraz Pinto

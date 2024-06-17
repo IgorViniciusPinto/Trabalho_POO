@@ -5,7 +5,7 @@ class Bibliotecario(PerfilUsuario):
     def __init__(self, email: str, senha: str) -> None:
         # Inicializa o objeto Bibliotecario com email e senha.
         super().__init__(email, senha)
-        self._papel = "Bibliotecario"
+        self._cargo = "Bibliotecario"
 
     def consultar_acervo(self, biblioteca: Dict[str, List[Optional[Any]]], titulo: Optional[str] = None) -> None:
         # Consulta o acervo da biblioteca e imprime as informações dos exemplares.

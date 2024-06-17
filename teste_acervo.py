@@ -7,23 +7,23 @@ class TestAcervo(unittest.TestCase):
         exemplar = Acervo(1, "Autor Exemplo", "Título Exemplo", 2023, "Ficção")
         
         # Teste de empréstimo
-        exemplar.set_emprestado(True)
-        self.assertTrue(exemplar.is_emprestado())
+        exemplar.emprestado = True
+        self.assertTrue(exemplar.emprestado)
 
         # Teste de devolução
-        exemplar.set_emprestado(False)
-        self.assertFalse(exemplar.is_emprestado())
+        exemplar.emprestado = False
+        self.assertFalse(exemplar.emprestado)
 
     def test_serializacao_desserializacao(self):
         exemplar = Acervo(1, "Autor Exemplo", "Título Exemplo", 2023, "Ficção")
         exemplar_str = exemplar.to_string()
         
         exemplar_desserializado = Acervo.from_string(exemplar_str)
-        self.assertEqual(exemplar_desserializado.get_codigo(), exemplar.get_codigo())
-        self.assertEqual(exemplar_desserializado.get_autor(), exemplar.get_autor())
-        self.assertEqual(exemplar_desserializado.get_titulo(), exemplar.get_titulo())
-        self.assertEqual(exemplar_desserializado.get_ano_publicacao(), exemplar.get_ano_publicacao())
-        self.assertEqual(exemplar_desserializado.get_genero(), exemplar.get_genero())
+        self.assertEqual(exemplar_desserializado.codigo, exemplar.codigo)
+        self.assertEqual(exemplar_desserializado.autor, exemplar.autor)
+        self.assertEqual(exemplar_desserializado.titulo, exemplar.titulo)
+        self.assertEqual(exemplar_desserializado.ano_publicacao, exemplar.ano_publicacao)
+        self.assertEqual(exemplar_desserializado.genero, exemplar.genero)
 
 class TestGestorAcervo(unittest.TestCase):
     def setUp(self):
@@ -53,10 +53,10 @@ class TestGestorAcervo(unittest.TestCase):
         for codigo, exemplares in gestor.acervo.items():
             for exemplar in exemplares:
                 print(f"  Código: {codigo}")
-                print(f"    Autor: {exemplar.get_autor()}")
-                print(f"    Título: {exemplar.get_titulo()}")
-                print(f"    Ano de Publicação: {exemplar.get_ano_publicacao()}")
-                print(f"    Gênero: {exemplar.get_genero()}")
+                print(f"    Autor: {exemplar.autor}")
+                print(f"    Título: {exemplar.titulo}")
+                print(f"    Ano de Publicação: {exemplar.ano_publicacao}")
+                print(f"    Gênero: {exemplar.genero}")
 
         print()
 
@@ -83,20 +83,20 @@ class TestGestorAcervo(unittest.TestCase):
         for codigo, exemplares in gestor2.acervo.items():
             for exemplar in exemplares:
                 print(f"  Código: {codigo}")
-                print(f"    Autor: {exemplar.get_autor()}")
-                print(f"    Título: {exemplar.get_titulo()}")
-                print(f"    Ano de Publicação: {exemplar.get_ano_publicacao()}")
-                print(f"    Gênero: {exemplar.get_genero()}")
+                print(f"    Autor: {exemplar.autor}")
+                print(f"    Título: {exemplar.titulo}")
+                print(f"    Ano de Publicação: {exemplar.ano_publicacao}")
+                print(f"    Gênero: {exemplar.genero}")
 
         print()
 
         self.assertEqual(len(gestor2.acervo), 2)
         exemplar_carregado = gestor2.consultar_exemplar_por_codigo(1)
         self.assertIsNotNone(exemplar_carregado)
-        self.assertEqual(exemplar_carregado.get_autor(), "Autor A")
-        self.assertEqual(exemplar_carregado.get_titulo(), "Título A")
-        self.assertEqual(exemplar_carregado.get_ano_publicacao(), 2021)
-        self.assertEqual(exemplar_carregado.get_genero(), "Ficção")
+        self.assertEqual(exemplar_carregado.autor, "Autor A")
+        self.assertEqual(exemplar_carregado.titulo, "Título A")
+        self.assertEqual(exemplar_carregado.ano_publicacao, 2021)
+        self.assertEqual(exemplar_carregado.genero, "Ficção")
 
 if __name__ == '__main__':
     unittest.main()

@@ -11,7 +11,7 @@ class Admin(PerfilUsuario):
         super().__init__(email, senha)
         self._cargo: str = "Admin"
 
-    # Métodos de gestão do acervo
+    # Verifica se o código do exemplar já existe no acervo para evitar duplicatas. Se não existir, o exemplar é adicionado.
     def adicionar_acervo(self, acervo: Dict[int, Acervo], exemplar:Acervo) -> bool:
         codigo: int = exemplar.get_codigo()
         if codigo in acervo:
@@ -105,7 +105,8 @@ class Admin(PerfilUsuario):
         else:
             print("Usuário não encontrado.")
 
-    # Método para salvar o acervo em um arquivo
+    # Escreve cada exemplar do acervo no arquivo especificado, convertendo o exemplar para uma string usando o 
+    # método to_string de Acervo
     def salvar_acervo(self, acervo: Dict[int, Acervo], filename: str = 'acervo.txt') -> None:
         try:
             with open(filename, 'w') as file:

@@ -15,15 +15,15 @@ class TestPerfilUsuario(unittest.TestCase):
     def test_inicializacao(self):
         # Testa a inicialização do objeto PerfilUsuario
         print("Teste de inicialização:")
-        print(f"ID: {self.usuario.get_ID_perfil_usuario()}")
-        print(f"Email: {self.usuario.get_email_perfil_usuario()}")
-        print(f"Senha: {self.usuario.get_senha_perfil_usuario()}")
-        print(f"Cargo: {self.usuario.get_cargo_usuario()}")
+        print(f"ID: {self.usuario.ID_perfil_usuario}")
+        print(f"Email: {self.usuario.email_perfil_usuario}")
+        print(f"Senha: {self.usuario.senha_perfil_usuario}")
+        print(f"Cargo: {self.usuario.cargo_usuario}")
         print()
         
-        self.assertEqual(self.usuario.get_email_perfil_usuario(), "email@exemplo.com")
-        self.assertEqual(self.usuario.get_senha_perfil_usuario(), "senha123")
-        self.assertIsNone(self.usuario.get_cargo_usuario())
+        self.assertEqual(self.usuario.email_perfil_usuario, "email@exemplo.com")
+        self.assertEqual(self.usuario.senha_perfil_usuario, "senha123")
+        self.assertIsNone(self.usuario.cargo_usuario)
 
     def test_consultar_acervo(self):
         # Testa o método consultar_acervo

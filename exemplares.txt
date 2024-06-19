@@ -1,2 +1,3 @@
 user@example.com,1,antes que o cafe esfrie,2024-06-20
 pedrinho@gameplays.com,0,metamorfose,2024-02-17
+1,2,aaaa,romeu,2022,port

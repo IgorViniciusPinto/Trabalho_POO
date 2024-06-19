@@ -13,7 +13,16 @@ class TestAluno(unittest.TestCase):
         self.exemplar2 = ExemplarConcreto(2, "Maria Oliveira", "Matemática Básica", 2019, "Educação")
         self.exemplar3 = ExemplarConcreto(3, "Carlos Drummond de Andrade", "Sentimento do Mundo", 1940, "Poesia")
 
-       
+        # Acervo de exemplares para consulta
+        self.acervo = {
+            1: [self.exemplar1],
+            2: [self.exemplar2],
+            3: [self.exemplar3]
+        }
+
+    def tearDown(self):
+        print("Finalizando os testes para Aluno...")
+
     def test_adicionar_remover_livro(self):
         print("\nTeste de adição e remoção de livro:")
 

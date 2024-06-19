@@ -38,10 +38,10 @@ class TestBibliotecario(unittest.TestCase):
         print(f"Acervo após adição do exemplar:")
         for codigo, exemplar in acervo.items():
             print(f"  Código: {codigo}")
-            print(f"    Título: {exemplar.get_titulo()}")
-            print(f"    Autor: {exemplar.get_autor()}")
-            print(f"    Ano: {exemplar.get_ano_publicacao()}")
-            print(f"    Gênero: {exemplar.get_genero()}")
+            print(f"    Título: {exemplar.titulo}")
+            print(f"    Autor: {exemplar.autor}")
+            print(f"    Ano: {exemplar.ano_publicacao}")
+            print(f"    Gênero: {exemplar.genero}")
         print()
 
         self.assertIn(1, acervo)  # Verifica se o exemplar foi adicionado ao acervo
@@ -57,13 +57,14 @@ class TestBibliotecario(unittest.TestCase):
         print(f"Acervo após remoção do exemplar:")
         for codigo, exemplar in acervo.items():
             print(f"  Código: {codigo}")
-            print(f"    Título: {exemplar.get_titulo()}")
-            print(f"    Autor: {exemplar.get_autor()}")
-            print(f"    Ano: {exemplar.get_ano_publicacao()}")
-            print(f"    Gênero: {exemplar.get_genero()}")
+            print(f"    Título: {exemplar.titulo}")
+            print(f"    Autor: {exemplar.autor}")
+            print(f"    Ano: {exemplar.ano_publicacao}")
+            print(f"    Gênero: {exemplar.genero}")
         print()
 
         self.assertNotIn(1, acervo)  # Verifica se o exemplar foi removido do acervo
 
 if __name__ == '__main__':
     unittest.main()
+

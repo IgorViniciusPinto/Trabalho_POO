@@ -1,6 +1,6 @@
+from exemplar import Exemplar, ExemplarConcreto
 from bibliotecario import Bibliotecario
 from typing import Dict, List, Union
-from exemplar import Exemplar, ExemplarConcreto
 from admin import Admin
 from aluno import Aluno
 import csv
@@ -33,6 +33,7 @@ class Sistema:
             self.tela_login()
 
     def carregar_acervos(self, arquivo: str) -> None:
+        # Carrega os exemplares a partir de um arquivo CSV.
         try:
             with open(arquivo, "r") as arquivo_acervos:
                 acervos_reader = csv.reader(arquivo_acervos)
@@ -51,7 +52,7 @@ class Sistema:
             print(f"Erro ao carregar acervos: {e}")
 
     def carregar_usuarios(self, arquivo:str) -> None:
-    # Carrega os usuários a partir de um arquivo CSV.
+        # Carrega os usuários a partir de um arquivo CSV.
         try:
             with open(arquivo, "r") as arquivo_usuarios:
                 usuarios_reader = csv.reader(arquivo_usuarios)
@@ -71,10 +72,10 @@ class Sistema:
                     self.usuarios[email] = perfil_usuario
 
         except FileNotFoundError:
-            print("Falha ao abrir o arquivo com os usuários.")
+            print("Falha ao abrir o arquivo de usuarios.")
         except Exception as e:
-            print(f"Erro ao carregar usuários: {e}")
-            
+            print(f"Erro ao carregar usuarios: {e}")
+
     def tela_cadastro(self, cargo: int) -> bool:
         # Tela de cadastro para novos usuários.
         # Returns: bool: True se o cadastro foi bem-sucedido ou se o usuário já tem cadastro, False caso contrário.
@@ -106,6 +107,7 @@ class Sistema:
         return False
     
     def criar_exemplar(self, codigo_acervo, autor, titulo, ano_publicacao, genero):
+        # Cria um novo exemplar e adiciona ao acervo.
         exemplar = ExemplarConcreto(codigo_acervo, autor, titulo, ano_publicacao, genero)
         if codigo_acervo not in self.biblioteca:
             self.biblioteca[codigo_acervo] = []
@@ -118,14 +120,17 @@ class Sistema:
         if email in self.usuarios:
             usuario = self.usuarios[email]
             senha = input("Digite sua senha: ")
-            if isinstance(usuario, Admin) or isinstance(usuario, Aluno) or isinstance(usuario, Bibliotecario):
-                return usuario, senha
+            if usuario.verificar_senha(senha):  # Assumindo que cada perfil tem um método para verificar senha
+                print(f"Bem-vindo, {usuario.get_email_perfil_usuario()}!")
+                return usuario
             else:
-                print("Usuário não reconhecido.")
+                print("Senha incorreta.")
         else:
             print("Email não encontrado.")
+        return None
 
     def tela_aluno(self, aluno:Aluno) -> None:
+        # Tela específica para alunos.
         while True:
             entrada_aluno = input("Olá aluno!\nDigite 1 para consultar seus livros:\nDigite 2 para consultar um livro específico:\nDigite 3 para sair:\n")
 
@@ -133,14 +138,14 @@ class Sistema:
                 print("Livros com você:")
                 aluno.get_livros_com_aluno()
             elif entrada_aluno == "2":
-                titulo_pesquisa = input("Digite o título do livro:\n")
+                titulo_pesquisa = input("Digite o código do livro:\n")
                 aluno.consultar_acervo(self.biblioteca, titulo_pesquisa)
             elif entrada_aluno == "3":
                 print("Até logo!!")
                 break  # Sair do loop ao digitar '3'
 
     def tela_bibliotecario(self, bibl: Bibliotecario) -> None:
-        # Tela para bibliotecários consultarem o acervo.
+        # Tela específica para bibliotecários.
         while True:
             print("Olá", bibl.get_email_perfil_usuario())
             print("Digite 1 para consultar todos os livros")

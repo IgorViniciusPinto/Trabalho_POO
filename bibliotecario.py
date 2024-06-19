@@ -11,14 +11,14 @@ class Bibliotecario(PerfilUsuario):
         # Consulta o acervo da biblioteca e imprime as informações dos exemplares.
         for codigo_acervo, exemplares in biblioteca.items():
             for exemplar in exemplares:
-                if exemplar is not None and (titulo is None or exemplar.get_titulo().lower() == titulo.lower()):
-                    print(f"Código: {codigo_acervo}, Título: {exemplar.get_titulo()}, Autor: {exemplar.get_autor()}, Ano: {exemplar.get_ano_publicacao()}, Gênero: {exemplar.get_genero()}")
+                if exemplar is not None and (titulo is None or exemplar.titulo.lower() == titulo.lower()):
+                    print(f"Código: {codigo_acervo}, Título: {exemplar.titulo}, Autor: {exemplar.autor}, Ano: {exemplar.ano_publicacao}, Gênero: {exemplar.genero}")
 
     # Salva os dados do usuário em um arquivo.
     def salvar_usuario(self, filename: str = 'usuarios.txt') -> None:
         try:
             with open(filename, 'a') as file:
-                file.write(f'{self.get_ID_perfil_usuario()}, {self.get_cargo_usuario()}, {self.get_email_perfil_usuario()}, {self.get_senha_perfil_usuario()}\n')
+                file.write(f'{self.ID_perfil_usuario}, {self.cargo_usuario}, {self.email_perfil_usuario}, {self.senha_perfil_usuario}\n')
             print(f"Usuário salvo com sucesso em '{filename}'.")
         except Exception as e:
             print(f"Erro ao salvar o usuário: {e}")
@@ -26,8 +26,8 @@ class Bibliotecario(PerfilUsuario):
     # Adiciona um exemplar ao acervo.
     def adicionar_acervo(self, acervo, exemplar) -> None:
         try:
-            if exemplar.get_codigo() not in acervo:
-                acervo[exemplar.get_codigo()] = exemplar
+            if exemplar.codigo not in acervo:
+                acervo[exemplar.codigo] = exemplar
                 print("Exemplar adicionado com sucesso ao acervo.")
             else:
                 print("Exemplar já existe no acervo.")

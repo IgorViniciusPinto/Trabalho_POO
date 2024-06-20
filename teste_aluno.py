@@ -1,5 +1,4 @@
 from exemplar import ExemplarConcreto
-import datetime
 from aluno import Aluno
 import unittest
 
